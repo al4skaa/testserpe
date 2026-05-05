@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quelle formation en paysage est faite pour toi ? – Serpe Formation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #1a4a2e;
+      --green-mid: #2d6e45;
+      --green-light: #3a8a55;
+      --green-bg: #1c5c38;
+      --red-accent: #e63030;
+      --white: #ffffff;
+      --text-light: rgba(255,255,255,0.85);
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--green-dark);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+      background-image:
+        radial-gradient(ellipse at 10% 20%, rgba(255,255,255,0.03) 0%, transparent 60%),
+        radial-gradient(ellipse at 90% 80%, rgba(255,255,255,0.03) 0%, transparent 60%);
+    }
+
+    /* Motif feuilles SVG en fond */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' opacity='0.06'%3E%3Cpath d='M60 10 Q80 40 60 70 Q40 40 60 10Z' fill='%23ffffff'/%3E%3Cpath d='M20 60 Q50 80 80 60 Q50 40 20 60Z' fill='%23ffffff'/%3E%3C/svg%3E");
+      background-size: 120px 120px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+    .header .badge {
+      display: inline-block;
+      background: var(--red-accent);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: clamp(26px, 6vw, 42px);
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .header h1 span {
+      color: var(--red-accent);
+    }
+    .header p {
+      font-size: 15px;
+      color: var(--text-light);
+      font-weight: 400;
+    }
+
+    /* FORMATION PILLS */
+    .pills {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0 36px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      background: var(--green-mid);
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+    .pill .icon { font-size: 18px; }
+
+    /* QUIZ */
+    #quiz { display: block; }
+    #result { display: none; }
+
+    .question-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(4px);
+    }
+    .question-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 10px;
+    }
+    .question-text {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 10px; }
+
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+    .option:hover {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.25);
+    }
+    .option.selected {
+      background: rgba(58, 138, 85, 0.4);
+      border-color: #5dc880;
+    }
+    .option-letter {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    .option.selected .option-letter {
+      background: #5dc880;
+      color: var(--green-dark);
+    }
+
+    /* PROGRESS */
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      height: 6px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #5dc880;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* CTA BUTTON */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      margin-top: 24px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary {
+      background: #5dc880;
+      color: var(--green-dark);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(93,200,128,0.35);
+    }
+    .btn-primary:disabled {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.35);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.3);
+      margin-top: 12px;
+    }
+    .btn-secondary:hover { border-color: rgba(255,255,255,0.6); }
+
+    /* RESULT */
+    .result-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 36px 28px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .result-emoji { font-size: 56px; margin-bottom: 16px; }
+    .result-tag {
+      display: inline-block;
+      background: var(--red-accent);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .result-title {
+      font-size: clamp(22px, 5vw, 32px);
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .result-subtitle {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .result-details {
+      background: rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .result-details h3 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #5dc880;
+      margin-bottom: 12px;
+    }
+    .detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .detail-item::before {
+      content: '✓';
+      color: #5dc880;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* CONTACT */
+    .contact-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .contact-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .contact-card p {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 18px;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 10px; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .contact-link:hover { background: rgba(255,255,255,0.15); }
+    .contact-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #5dc880;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* LOGO */
+    .logo-footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .logo-footer span { color: #5dc880; }
+
+    /* Transition question */
+    .question-card { animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">🌿 Serpe Formation</div>
+    <h1>Quelle formation<br>en paysage est<br><span>faite pour toi ?</span></h1>
+    <p>Deux parcours, un même objectif : travailler dans le paysage.<br>Réponds à 6 questions pour découvrir lequel te correspond.</p>
+    <div class="pills">
+      <div class="pill"><span class="icon">✂️</span> TP OP</div>
+      <div class="pill"><span class="icon">🌱</span> BP AP</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz"></div>
+
+  <!-- RESULT -->
+  <div id="result"></div>
+
+  <!-- FOOTER -->
+  <div class="logo-footer"><span>Serpe</span> Formation</div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: "Quel est ton niveau dans le paysage aujourd'hui ?",
+    options: [
+      { label: "Je pars de zéro ou je viens d'un autre domaine", value: "A" },
+      { label: "J'ai un CAP Paysage ou une première expérience sur le terrain", value: "B" }
+    ]
+  },
+  {
+    text: "Pourquoi tu veux te former au paysage ?",
+    options: [
+      { label: "Changer de vie et découvrir un nouveau métier", value: "A" },
+      { label: "Aller plus loin dans un secteur que je connais déjà un peu", value: "B" }
+    ]
+  },
+  {
+    text: "Quelle durée de formation tu peux envisager ?",
+    options: [
+      { label: "1 an — je veux être opérationnel(le) rapidement", value: "A" },
+      { label: "2 ans — je suis prêt(e) à investir plus de temps pour une meilleure qualification", value: "B" }
+    ]
+  },
+  {
+    text: "Où tu te vois dans quelques années ?",
+    options: [
+      { label: "Sur le terrain comme ouvrier(e) paysagiste qualifié(e)", value: "A" },
+      { label: "Chef(fe) d'équipe ou responsable de chantier", value: "B" }
+    ]
+  },
+  {
+    text: "Qu'est-ce qui t'attire le plus dans la formation ?",
+    options: [
+      { label: "Maîtriser les gestes techniques du métier (entretien, création d'espaces verts)", value: "A" },
+      { label: "Apprendre à organiser et gérer un chantier en plus du technique", value: "B" }
+    ]
+  },
+  {
+    text: "Comment tu vis l'idée de trouver une entreprise pour ton alternance ?",
+    options: [
+      { label: "Je préfère que ce soit géré pour moi — je n'ai pas de contacts dans le secteur", value: "A" },
+      { label: "Ça m'est égal, l'important c'est la qualité de la formation", value: "B" }
+    ]
+  }
+];
+
+const results = {
+  A: {
+    emoji: "✂️",
+    tag: "Formation recommandée",
+    title: "TP OP — Titre Pro Ouvrier Paysagiste",
+    subtitle: "Tu pars de zéro ou tu changes de cap ? Le TP OP est fait pour toi. Accessible sans prérequis, cette formation d'un an te donne toutes les bases solides du métier — et Serpe s'occupe de te placer en entreprise.",
+    details: [
+      "Formation sur 1 an (12 sem. CFA + 40 sem. en agence Serpe)",
+      "Accessible à tous — idéale pour débuter ou se reconvertir",
+      "Apprentissage du métier : entretien et création des espaces verts",
+      "75% pratique sur chantiers réels",
+      "Formation en alternance : prise en charge et rémunérée",
+      "Pas besoin de chercher une entreprise — Serpe te place !"
+    ]
+  },
+  B: {
+    emoji: "🌱",
+    tag: "Formation recommandée",
+    title: "BP AP — Brevet Professionnel Aménagements Paysagers",
+    subtitle: "Tu as déjà un pied dans le paysage et tu veux évoluer ? Le BP AP t'emmène au niveau supérieur sur deux ans, avec une vraie dimension organisation de chantier pour viser un poste de chef d'équipe.",
+    details: [
+      "Formation sur 2 ans (24 sem. CFA + 80 sem. en agence Serpe)",
+      "Accessible avec un CAP ou une première expérience terrain",
+      "Approfondissement des techniques + organisation de chantier",
+      "Viser un poste de chef d'équipe",
+      "75% pratique sur chantiers réels",
+      "Formation en alternance : prise en charge et rémunérée"
+    ]
+  },
+  MIX: {
+    emoji: "🤝",
+    tag: "Profil mixte",
+    title: "Parle-en avec Serpe !",
+    subtitle: "Ton profil est à la croisée des deux parcours. La meilleure façon de choisir est d'échanger directement avec l'équipe Serpe Formation — ils t'aideront à construire le parcours le plus adapté à ta situation.",
+    details: [
+      "Les deux formations sont en alternance, rémunérées et prises en charge",
+      "75% pratique sur chantiers dans les deux cas",
+      "Encadrement expert et groupe qui recrute",
+      "Serpe s'occupe de te placer en entreprise"
+    ]
+  }
+};
+
+let answers = [];
+let current = 0;
+
+function renderQuestion(index) {
+  const q = questions[index];
+  const pct = Math.round((index / questions.length) * 100);
+  document.getElementById('progress').style.width = pct + '%';
+
+  const quiz = document.getElementById('quiz');
+  quiz.innerHTML = `
+    <div class="question-card">
+      <div class="question-num">Question ${index + 1} / ${questions.length}</div>
+      <div class="question-text">${q.text}</div>
+      <div class="options" id="options">
+        ${q.options.map((opt, i) => `
+          <div class="option" data-value="${opt.value}" onclick="selectOption(this, '${opt.value}')">
+            <div class="option-letter">${String.fromCharCode(65 + i)}</div>
+            <div>${opt.label}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <button class="btn btn-primary" id="nextBtn" disabled onclick="nextQuestion()">
+      ${index < questions.length - 1 ? 'Question suivante →' : 'Voir mon résultat 🌿'}
+    </button>
+  `;
+}
+
+function selectOption(el, value) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('nextBtn').disabled = false;
+  answers[current] = value;
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    renderQuestion(current);
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('progress').style.width = '100%';
+  document.getElementById('quiz').style.display = 'none';
+
+  const countA = answers.filter(a => a === 'A').length;
+  const countB = answers.filter(a => a === 'B').length;
+
+  let key;
+  if (countA > countB + 1) key = 'A';
+  else if (countB > countA + 1) key = 'B';
+  else if (countA === countB) key = 'MIX';
+  else if (countA > countB) key = 'A';
+  else key = 'B';
+
+  const r = results[key];
+  const resultDiv = document.getElementById('result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `
+    <div class="result-card">
+      <div class="result-emoji">${r.emoji}</div>
+      <div class="result-tag">${r.tag}</div>
+      <div class="result-title">${r.title}</div>
+      <div class="result-subtitle">${r.subtitle}</div>
+      <div class="result-details">
+        <h3>Ce que ça comprend</h3>
+        ${r.details.map(d => `<div class="detail-item">${d}</div>`).join('')}
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <h3>Intéressé(e) ?</h3>
+      <p>Lance ta carrière avec Serpe Formation — contacte-nous ou inscris-toi dès maintenant.</p>
+      <div class="contact-links">
+        <a href="tel:0486840076" class="contact-link">
+          <div class="contact-icon">📞</div>
+          04 86 84 00 76
+        </a>
+        <a href="mailto:formation@serpe.fr" class="contact-link">
+          <div class="contact-icon">✉️</div>
+          formation@serpe.fr
+        </a>
+        <a href="https://serpe-formation.fr" target="_blank" class="contact-link">
+          <div class="contact-icon">🌐</div>
+          serpe-formation.fr
+        </a>
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" onclick="restart()">↩ Recommencer le test</button>
+  `;
+}
+
+function restart() {
+  answers = [];
+  current = 0;
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  renderQuestion(0);
+}
+
+renderQuestion(0);
+</script>
+</body>
+</html>
